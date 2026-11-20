@@ -138,10 +138,10 @@ nav a.on{border-color:#12906F}.ur button{border-color:#1F4F7A;color:#1F4F7A}
 
 /* ===== MQF 4.0 Central Sector: green poster theme ===== */
 .rl{margin:.5rem 0 0}.rl summary{cursor:pointer;font-weight:600;color:#12906F}.rl p{margin:.35rem 0 0;font-size:.92rem;line-height:1.5}
-#pth{display:none}.prh{display:none}#ppr{display:none}
+#pth{display:none}.prh{display:none}#ppr{display:none}.ptbl{display:none}
 @media print{
 @page{size:A4;margin:12mm}
-body.pp>*{display:none!important}body.pp>#ppr{display:block!important}#ppr .prh{display:block;font-weight:700;margin:8px 0 4px}#ppr .fgp{margin-bottom:12px}#ppr .stc{margin-bottom:8px}
+body.pp>*{display:none!important}body.pp>#ppr{display:block!important}#ppr .prh{display:block;font-weight:700;margin:8px 0 4px}#ppr .fgp{margin-bottom:12px}#ppr .stc{margin-bottom:8px}.ptbl{display:block!important}.epg{break-after:page;page-break-after:always}#ppr>.epg:last-child{break-after:auto;page-break-after:auto}#ppr .epg .prh{font-size:16pt;margin:4px 0 12px}.et{width:100%;border-collapse:collapse;font-size:11pt}.et th,.et td{border:1px solid #000!important;padding:10px 8px;text-align:left;color:#000}.et th{background:#eee!important}.et td{height:10mm}.et th:nth-child(1),.et td:nth-child(1){width:8%}.et th:nth-child(4),.et td:nth-child(4){width:22%}.et th:nth-child(5),.et td:nth-child(5){width:18%}
 html,body{background:#fff!important;color:#000!important;font-size:11pt}
 header,footer,nav,.tabs,.sb,.greet,#mbw,.np,.pill,.poster,label,input,select,textarea,button,.btn,#nm{display:none!important}
 #pth{display:flex!important;justify-content:space-between;gap:12px;border-bottom:2px solid #000;padding-bottom:6px;margin-bottom:10px;font-size:10pt}
@@ -299,7 +299,7 @@ async function addP(){if(!g('pn'))return msg('Enter a program name.');const off=
 let r=await q(o);if(r.error&&off){o.day=null;o.at_time=null;o.venue=null;r=await q(o)}
 if(r.error)return msg(r.error.message);await load();coord()}
 async function delP(id){if(!await cf('Remove this program and its entries?'))return;if(await run(SB.from('programs').delete().eq('id',id)))coord()}
-const ent=p=>{const a=S.regs.filter(r=>r.pid==p.id);return a.length?`<details class="pr"><summary>Entry list (${a.length})</summary><div class="prh">${esc(p.name)} <small>${meta(p)}${wh(p)?', '+wh(p):''}</small></div>${a.map(r=>`<div class="row"><span>${esc(r.n)}<small class="mute"> ${T[r.t].n}${r.cd?', code '+esc(r.cd):''}${r.at?'':', absent'}</small></span><input class="sm" style="width:5rem" placeholder="Code" aria-label="Code letter" value="${esc(r.cd)}" onchange="setCode(${r.id},this.value)"><button class="btn s${r.at?'':' o'}" onclick="att(${r.id},${!r.at})">${r.at?'Participated':'Absent'}</button></div>`).join('')}</details>`:''};
+const ent=p=>{const a=S.regs.filter(r=>r.pid==p.id);return a.length?`<details class="pr epg"><summary>Entry list (${a.length})</summary><div class="ptbl"><div class="prh">${esc(p.name)} · ${PZ[p.zone]}</div><table class="et"><thead><tr><th>No.</th><th>Student</th><th>Campus</th><th>Sign</th><th>Code letter</th></tr></thead><tbody>${a.map((r,i)=>`<tr><td>${i+1}</td><td>${esc(r.n)}</td><td>${T[r.t].n}</td><td></td><td></td></tr>`).join('')}</tbody></table></div><div class="np">${a.map(r=>`<div class="row"><span>${esc(r.n)}<small class="mute"> ${T[r.t].n}${r.cd?', code '+esc(r.cd):''}${r.at?'':', absent'}</small></span><input class="sm" style="width:5rem" placeholder="Code" aria-label="Code letter" value="${esc(r.cd)}" onchange="setCode(${r.id},this.value)"><button class="btn s${r.at?'':' o'}" onclick="att(${r.id},${!r.at})">${r.at?'Participated':'Absent'}</button></div>`).join('')}</div></details>`:''};
 async function att(id,v){const f=x=>SB.from('regs').update({attended:x}).eq('id',id);if(await run(f(v))){rec(()=>f(!v),()=>f(v));coord()}}
 async function addPts(id,v){if(!v&&!await cf('Remove this program’s points from campus points?'))return;const f=x=>SB.from('programs').update({pts_added:x}).eq('id',id);if(await run(f(v))){rec(()=>f(!v),()=>f(v));coord()}}
 function togInd(id){const a=S.noInd||[];setS({noInd:a.includes(id)?a.filter(x=>x!=id):[...a,id]})}
