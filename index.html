@@ -442,4 +442,16 @@ if(await run(SB.from('results').insert(out),'evm')){rec(()=>setRes(p.id,prev),()
 
 addEventListener('beforeprint',()=>{document.querySelectorAll('details').forEach(d=>d.open=true);const a=E('app');let t=(a.querySelector('h2')||{}).textContent||'';const tb=document.querySelectorAll('#tabs button')[SEC];if(E('sl')&&tb)t+=' · '+tb.textContent.replace(/^\d+\.\s*/,'');const sl=E('sl'),act=sl&&sl.children[SEC],items=[...a.querySelectorAll('.pr')].filter(e=>!e.closest('[hidden]')&&(!sl||!e.closest('.pn')||e.closest('.pn')==act));if(items.length){const w=document.createElement('div');w.id='ppr';w.innerHTML='<div id="pth"><b>Markaz Qur’an Fest 4.0 · Central Sector</b><span>'+esc(t)+' · '+when()+'</span></div>';items.forEach(e=>w.appendChild(e.cloneNode(true)));document.body.appendChild(w);document.body.classList.add('pp');return}document.querySelectorAll('#sl .pn').forEach((p,i)=>{if(i!=SEC)p.classList.add('np')});const h=document.createElement('div');h.id='pth';h.innerHTML='<b>Markaz Qur’an Fest 4.0 · Central Sector</b><span>'+esc(t)+' · '+when()+'</span>';a.prepend(h)});
 addEventListener('afterprint',()=>{const pp=E('ppr');if(pp)pp.remove();document.body.classList.remove('pp');const h=E('pth');if(h)h.remove();document.querySelectorAll('.pn.np').forEach(p=>p.classList.remove('np'))});
+
+/* ===== keyboard shortcuts: Ctrl+S search, Ctrl+E programs & entries, Ctrl+R add results, Ctrl+C call list, Ctrl+V valuation, Ctrl+L new login ===== */
+let PEND=null;const _route=route;route=function(){_route();if(PEND!==null&&me&&me.r=='C'&&E('sl')){const i=PEND;PEND=null;slide(i,false)}else PEND=null};
+const KT={1:'Ctrl+E',2:'Ctrl+R',3:'Ctrl+C',5:'Ctrl+V'};const _tabUI=tabUI;tabUI=function(){_tabUI();document.querySelectorAll('#tabs button').forEach((b,i)=>{if(KT[i])b.title='Shortcut: '+KT[i]})};
+function kgo(i,pub){const h=location.hash.slice(1);if(me&&me.r=='C'){if(h=='dash'&&E('sl'))slide(i);else{PEND=i;if(h=='dash')route();else go('dash')}}else if(me){if(h!='dash')go('dash')}else if(pub)go(pub)}
+addEventListener('keydown',async e=>{if(!(e.ctrlKey||e.metaKey)||e.altKey||e.shiftKey)return;const k=e.key.toLowerCase();if(!'secrvl'.includes(k)||k.length!=1)return;if(document.querySelector('.modal'))return;
+const a=document.activeElement,ed=a&&(a.isContentEditable||/^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName)&&!/^(button|checkbox|radio)$/.test(a.type||''));
+if(k=='s'){e.preventDefault();let q=E('q');if(!q&&me&&me.r=='C'){kgo(1);return}if(q){q.focus();q.select()}return}
+if(k=='c'||k=='v'){if(ed)return;if(k=='c'&&String(getSelection()))return}
+e.preventDefault();
+if(k=='e')kgo(1,'programs');else if(k=='r')kgo(2,'points');else if(k=='c')kgo(3);else if(k=='v')kgo(5);
+else if(k=='l'){if(me){if(!await cf('Log out and go to the login page?'))return;await logout()}go('login');if(!me)route()}});
 </script></body></html>
